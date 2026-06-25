@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<sdf version="1.6">
+<sdf version="1.7">
   <model name="BlueFakeKFS10">
     <static>false</static>
     <link name="link">
@@ -24,11 +24,16 @@
           </mesh>
         </geometry>
         <material>
-          <script>
-            <uri>model://BlueFakeKFS10/materials/scripts</uri>
-            <uri>model://BlueFakeKFS10/materials/textures</uri>
-            <name>RoboCon/BlueFakeKFS10</name>
-          </script>
+          <ambient>1 1 1 1</ambient>
+          <diffuse>1 1 1 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://BlueFakeKFS10/materials/textures/BlueFakeKFS10.png</albedo_map>
+              <metalness>0.0</metalness>
+              <roughness>0.7</roughness>
+            </metal>
+          </pbr>
         </material>
       </visual>
     </link>

@@ -81,6 +81,15 @@ ros2 topic echo /simulation/status --field data --full-length
 **调用方式**:
 发送空请求即可。系统将重新随机生成梅林区布局并清空九宫格。
 
+## 3. Gazebo Harmonic 内部姿态桥
+
+KFS 管理节点通过以下内部服务移动 Gazebo 中的模型：
+
+*   **Service**: `/simulation/set_entity_pose`
+*   **Type**: `ros_gz_interfaces/srv/SetEntityPose`
+
+该服务由 `gz_pose_bridge` 节点提供，内部会调用 Gazebo Transport 的 `/world/robocon2026_world_scene/set_pose/blocking`。普通控制流程建议继续使用上面的 `/simulation/gui_event` 和 `/simulation/reset_kfs`，不要直接绕过 KFS 管理状态。
+
 ---
 
 ## 附录

@@ -7,20 +7,39 @@
   <maintainer email="edmounds@163.com">rc3</maintainer>
   <license>TODO: License declaration</license>
 
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
   <depend>rclpy</depend>
+  <depend>ros_gz_interfaces</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
   <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>gz-msgs10</depend>
+  <depend>gz-transport13</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
 
-  <export>
-    <build_type>ament_python</build_type>
-  </export>
-  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>rosgraph_msgs</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>rviz2</exec_depend>
   <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>sensor_msgs_py</exec_depend>
+  <exec_depend>teleop_twist_keyboard</exec_depend>
   <exec_depend>python3-scipy</exec_depend>
+  <exec_depend>python3-tk</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

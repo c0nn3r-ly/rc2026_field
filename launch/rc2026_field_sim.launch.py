@@ -1,32 +1,37 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, ExecuteProcess, RegisterEventHandler, AppendEnvironmentVariable
+from launch.actions import IncludeLaunchDescription, AppendEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
+
 
 def generate_launch_description():
     pkg_rc2026_field = get_package_share_directory('rc2026_field')
-    config_path = os.path.join(pkg_rc2026_field, 'config', 'kfs_config.yaml')
-    
+
     world_path = os.path.join(pkg_rc2026_field, 'worlds', 'robocon2026_with_kfs.world')
-    set_model_path = AppendEnvironmentVariable(
-        name='GAZEBO_MODEL_PATH',
+    set_resource_path = AppendEnvironmentVariable(
+        name='GZ_SIM_RESOURCE_PATH',
         value=os.path.join(pkg_rc2026_field, 'models')
     )
-    
-    
-    gazebo = IncludeLaunchDescription(
+
+    gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
-            get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
+            get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
         launch_arguments={
-            'world': world_path,
+            'gz_args': f'-r {world_path}',
         }.items(),
     )
 
+    clock_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
+        output='screen'
+    )
 
     return LaunchDescription([
-        set_model_path,
-        gazebo
+        set_resource_path,
+        gz_sim,
+        clock_bridge
     ])

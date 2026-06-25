@@ -1,15 +1,25 @@
 <sdf version='1.7'>
   <world name='robocon2026_world_scene'>
-    <!-- Gazebo ROS State Plugin for set_entity_state service -->
-    <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so">
-      <ros>
-        <namespace>/</namespace>
-      </ros>
-      <update_rate>50.0</update_rate>
+    <plugin
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
     </plugin>
     <light name='sun_main1' type='directional'>
       <pose>0 0 20 0 -0 0</pose>
-      <diffuse>255 255 255 1</diffuse>
+      <diffuse>1 1 1 1</diffuse>
       <specular>0.3 0.3 0.3 1</specular>
       <direction>0.5 0.5 -1</direction>
       <cast_shadows>1</cast_shadows>
@@ -22,7 +32,7 @@
     </light>
     <light name='sun_main2' type='directional'>
       <pose>0 0 20 0 -0 0</pose>
-      <diffuse>255 255 255 1</diffuse>
+      <diffuse>1 1 1 1</diffuse>
       <specular>0.3 0.3 0.3 1</specular>
       <direction>-0.5 0.5 -1</direction>
       <cast_shadows>1</cast_shadows>
@@ -35,7 +45,7 @@
     </light>
     <light name='sun_main3' type='directional'>
       <pose>0 0 20 0 -0 0</pose>
-      <diffuse>255 255 255 1</diffuse>
+      <diffuse>1 1 1 1</diffuse>
       <specular>0.3 0.3 0.3 1</specular>
       <direction>0.5 -0.5 -1</direction>
       <cast_shadows>1</cast_shadows>
@@ -48,7 +58,7 @@
     </light>
     <light name='sun_main4' type='directional'>
       <pose>0 0 20 0 -0 0</pose>
-      <diffuse>255 255 255 1</diffuse>
+      <diffuse>1 1 1 1</diffuse>
       <specular>0.3 0.3 0.3 1</specular>
       <direction>-0.5 -0.5 -1</direction>
       <cast_shadows>1</cast_shadows>

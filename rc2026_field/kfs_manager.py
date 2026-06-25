@@ -3,7 +3,8 @@ import rclpy
 from rclpy.node import Node
 from std_srvs.srv import Trigger
 from std_msgs.msg import String
-from gazebo_msgs.srv import SetEntityState
+from ros_gz_interfaces.msg import Entity
+from ros_gz_interfaces.srv import SetEntityPose
 import math
 from scipy.spatial.transform import Rotation
 import os
@@ -51,7 +52,8 @@ class KFSManager(Node):
         self.current_seed_ = -1  # 当前使用的随机种子 
 
         # ROS 接口
-        self.client_set_entity_state_ = self.create_client(SetEntityState, '/set_entity_state')
+        self.client_set_entity_pose_ = self.create_client(
+            SetEntityPose, '/simulation/set_entity_pose')
         self.srv_reset_ = self.create_service(Trigger, '/simulation/reset_kfs', self.handle_reset)
         self.sub_gui_event_ = self.create_subscription(String, '/simulation/gui_event', self.handle_gui_event, 10)
         self.pub_status_ = self.create_publisher(String, '/simulation/status', 10)
@@ -95,8 +97,8 @@ class KFSManager(Node):
         self.red_weapon_count_ = self.config.get('red_weapon_count', 5)
         self.blue_weapon_count_ = self.config.get('blue_weapon_count', 5)
         
-        if not self.client_set_entity_state_.service_is_ready():
-            self.get_logger().warn("Gazebo set_entity_state 服务未就绪")
+        if not self.client_set_entity_pose_.wait_for_service(timeout_sec=2.0):
+            self.get_logger().warn("Gazebo set_entity_pose 桥接服务未就绪")
         
         models_cfg = self.config.get('models', {})
         if not models_cfg:
@@ -503,28 +505,33 @@ class KFSManager(Node):
         return cx + ox, cy + oy, cz, yaw_rad
 
     def move_model(self, model_name, x, y, z, yaw=0.0):
-        """调用 Gazebo 服务移动KFS。
+        """调用 Gazebo Harmonic 桥接服务移动KFS。
 
         Args:
             model_name: KFS名称。
             x, y, z: 目标位置坐标。
             yaw: 偏航角 (弧度)，默认为 0。
         """
-        req = SetEntityState.Request()
-        req.state.name = model_name
-        req.state.pose.position.x = float(x)
-        req.state.pose.position.y = float(y)
-        req.state.pose.position.z = float(z)
+        if not self.client_set_entity_pose_.service_is_ready():
+            self.get_logger().warn("Gazebo set_entity_pose 桥接服务未就绪")
+            return
+
+        req = SetEntityPose.Request()
+        req.entity.name = model_name
+        req.entity.type = Entity.MODEL
+        req.pose.position.x = float(x)
+        req.pose.position.y = float(y)
+        req.pose.position.z = float(z)
 
         r = Rotation.from_euler('xyz', [0, 0, yaw])
         q = r.as_quat()
         
-        req.state.pose.orientation.x = float(q[0])
-        req.state.pose.orientation.y = float(q[1])
-        req.state.pose.orientation.z = float(q[2]) 
-        req.state.pose.orientation.w = float(q[3]) 
+        req.pose.orientation.x = float(q[0])
+        req.pose.orientation.y = float(q[1])
+        req.pose.orientation.z = float(q[2])
+        req.pose.orientation.w = float(q[3])
         
-        future = self.client_set_entity_state_.call_async(req)
+        future = self.client_set_entity_pose_.call_async(req)
         
         def done_callback(future):
             try:
